@@ -39,7 +39,7 @@ int main( int argc, char *argv[] ){
     bzero(&server_addr, sizeof(server_addr));
     server_addr.sin_family = AF_INET;
     server_addr.sin_port = htons(SERV_PORT);
-    server_addr.sin_addr.s_addr = inet_addr(SERV_IP);
+    server_addr.sin_addr.s_addr = inet_addr(SERV_IP); // converse ip adderss from string to network ip (int)
     printf("Server IP: %s - Port: %d\n", SERV_IP, SERV_PORT);
 
     // Step 3: Connect to server to receive client task

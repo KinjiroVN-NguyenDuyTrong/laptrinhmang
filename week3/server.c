@@ -60,22 +60,28 @@ int main(int argc, char *argv[] ){
 
 
 
-    // Step 1: Construct a UDP socket
-
+    /* :Construct a UDP socket
+        -Make IPv4 Internet protocols.
+        -Supports datagrams (data truyền theo từng gói một).
+        -Only a single protocol exists to support a particular 
+        socket type within a given protocol family.
+    */
     if ((server_sock=socket(AF_INET, SOCK_DGRAM, 0)) == -1){
         // Call socket() to create a socket
         perror("\nError: ");
         return 0;
     }
 
-    // Step 2: Bind address to socket
 
+    //Define the address of the server
+    
     server.sin_family = AF_INET;
     server.sin_port = htons(port);
     server.sin_addr.s_addr = INADDR_ANY;
     printf("\nPort: %d", port);
     bzero(&server.sin_zero, 8);
 
+    // Bind address to socket
     if ((bind(server_sock, (struct sockaddr*)&server, sizeof(server))) == -1){
         // Call bind() to bind address to socket
         perror("\nError: ");

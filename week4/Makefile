@@ -1,8 +1,5 @@
-all: client server
-client: client.c
-	gcc client.c -o client
-server: server.c
-	gcc server.c -o server
+homework1: server.c client.c
+	gcc -o server server.c file.c linkedlist.c handle.c
+	gcc -o client client.c
 clean:
-	rm -f *.o client
-	rm -f *.o server
+	rm -f *.o *~

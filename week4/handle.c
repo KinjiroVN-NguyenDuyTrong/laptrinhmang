@@ -4,7 +4,7 @@
 #include "linkedlist.h"
 #include "file.h"
 #include "handle.h"
-Node *getUserAndPass(linkedList *list, char username[30],char password[30])
+int getUserAndPass(linkedList *list, char username[30],char password[30])
 {
   Node *cur = list->root;
   while (cur != NULL)
@@ -12,11 +12,14 @@ Node *getUserAndPass(linkedList *list, char username[30],char password[30])
     if (strcmp(cur ->acc.username, username) == 0)
       {
         if (strcmp(cur ->acc.password, password) == 0)
-        return cur;
+        {
+          if(cur->acc.status==1) return 1;
+          else return 0;
+        }
       }
     cur = cur ->next;
   }
-  return NULL;
+  return 2;
 }
 
 
@@ -24,9 +27,11 @@ Node *getUserAndPass(linkedList *list, char username[30],char password[30])
 Node *userAuth(linkedList *list, char username[1024],char password[30])
 {
   int inputTime = 0;
+  /*
   Node *userpas;
   userpas = getUserAndPass(list, username,password);
   if (userpas == NULL)
     return NULL;
-  return userpas;
+  return userpas;*/
+  int check = getUserAndPass(list,username,password);
 }

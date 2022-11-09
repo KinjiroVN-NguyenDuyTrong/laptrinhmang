@@ -70,9 +70,10 @@ int main(int argc, char *argv[] ){
     listen(server_sock, 5);
     read(client_socket, buffer2, 1024);
     //printf("From client password: %s\n", buffer2);
+    
     if (sizeof(buffer) > 0 && sizeof(buffer2) > 0)
     {
-      if (userAuth(&list, buffer,buffer2) != NULL)
+      if (getUserAndPass(&list, buffer,buffer2) ==1 )
       {
         strcpy(server_mesg, "User signed in!\n");
         send(client_socket, server_mesg, sizeof(server_mesg), 0);
@@ -84,6 +85,12 @@ int main(int argc, char *argv[] ){
         return 0;
         }
       }
+      else if (getUserAndPass(&list, buffer,buffer2) ==0)
+      {
+        strcpy(server_mesg, "Account not ready\n");
+        send(client_socket, server_mesg, sizeof(server_mesg), 0);
+      }
+      
       else
       {
         strcpy(server_mesg, "Username is incorrect, please try again\n");

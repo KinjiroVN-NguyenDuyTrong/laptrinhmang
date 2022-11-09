@@ -5,23 +5,35 @@
 #include <sys/types.h>
 #include <string.h>
 
-#define SERVER_ADDR "127.0.0.1"
-#define SERVER_PORT 5550
 #define BUFF_SIZE 8192
 
-int main(){
+int main(int argc, char *argv[]){
+	if (argc != 3){
+        printf("Usage: %s <Server IP> <Server Port>\n", argv[0]);
+        return 0;
+    }
+
 	int client_sock;
 	char buff[BUFF_SIZE];
 	struct sockaddr_in server_addr; /* server's address information */
 	int msg_len, bytes_sent, bytes_received;
 	
+	char SERV_IP[16];
+    int SERV_PORT;
+
+	strcpy(SERV_IP, argv[1]);
+    SERV_PORT = atoi(argv[2]);
 	//Step 1: Construct socket
-	client_sock = socket(AF_INET,SOCK_STREAM,0);
+	if((client_sock=socket(AF_INET, SOCK_STREAM, 0)) < 0){
+        // Call socket() to create a socket
+        perror("\nError: ");
+        return 0;
+    }
 	
 	//Step 2: Specify server address
 	server_addr.sin_family = AF_INET;
-	server_addr.sin_port = htons(SERVER_PORT);
-	server_addr.sin_addr.s_addr = inet_addr(SERVER_ADDR);
+	server_addr.sin_port = htons(SERV_PORT);
+	server_addr.sin_addr.s_addr = inet_addr(SERV_IP);
 	
 	//Step 3: Request to connect server
 	if(connect(client_sock, (struct sockaddr*)&server_addr, sizeof(struct sockaddr)) < 0){

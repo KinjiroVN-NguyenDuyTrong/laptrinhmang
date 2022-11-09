@@ -6,20 +6,57 @@
 #include <string.h>
 #include <unistd.h>
 
-#define PORT 5550   /* Port that will be opened */ 
-#define BACKLOG 2   /* Number of allowed connections */
+
+#define BACKLOG 5   /* Number of allowed connections */
 #define BUFF_SIZE 1024
 
-int main()
+void string_process(char *buff, char *character, char *number){
+    // If received string include non-digit or non-alphabet character, 
+    // return error message
+    int i;
+    // Ignore the last character "\n"
+    buff[strlen(buff)-1] = '\0';
+    
+    for (i = 0; i < strlen(buff); i++){
+        if (isdigit(buff[i]) == 0 && isalpha(buff[i]) == 0){
+            strcpy(buff, "Error\0");
+            return;
+        }
+    }
+    // Split received string into character and number sub-string
+    int j = 0;
+    int k = 0;
+    for (i = 0; i < strlen(buff); i++){
+        if (isdigit(buff[i]) != 0){
+            number[j] = buff[i];
+            j++;
+        }
+        else{
+            character[k] = buff[i];
+            k++;
+        }
+    }
+    // Copy character and number sub-string to buff
+    strcpy(buff, number);
+    strcat(buff, "\n");
+    strcat(buff, character);
+    buff[strlen(buff)] = '\0';
+    // printf("\nbuff: %s", buff);
+    
+}
+
+int main(int argc, char *argv[])
 {
  
 	int listen_sock, conn_sock; /* file descriptors */
 	char recv_data[BUFF_SIZE];
 	int bytes_sent, bytes_received;
+	int port = atoi(argv[1]); //server port
 	struct sockaddr_in server; /* server's address information */
 	struct sockaddr_in client; /* client's address information */
 	int sin_size;
-	
+	char server_mesg[256] = "Server connected successfully!\n";
+
 	//Step 1: Construct a TCP socket to listen connection request
 	if ((listen_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){  /* calls socket() */
 		perror("\nError: ");
@@ -27,9 +64,9 @@ int main()
 	}
 	
 	//Step 2: Bind address to socket
-	bzero(&server, sizeof(server));
+	//bzero(&server, sizeof(server));
 	server.sin_family = AF_INET;         
-	server.sin_port = htons(PORT);   /* Remember htons() from "Conversions" section? =) */
+	server.sin_port = htons(port);   /* Remember htons() from "Conversions" section? =) */
 	server.sin_addr.s_addr = htonl(INADDR_ANY);  /* INADDR_ANY puts your IP address automatically */   
 	if(bind(listen_sock, (struct sockaddr*)&server, sizeof(server))==-1){ /* calls bind() */
 		perror("\nError: ");

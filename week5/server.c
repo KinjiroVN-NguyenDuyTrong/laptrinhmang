@@ -72,13 +72,15 @@ int main(int argc, char *argv[])
 		perror("\nError: ");
 		return 0;
 	}     
+	printf("\nServer is running on port %d\n",port);
 	
 	//Step 3: Listen request from client
 	if(listen(listen_sock, BACKLOG) == -1){  /* calls listen() */
 		perror("\nError: ");
 		return 0;
 	}
-	
+	conn_sock=accept(listen_sock, NULL, NULL);
+	send(conn_sock, server_mesg, sizeof(server_mesg), 0);
 	//Step 4: Communicate with client
 	while(1){
 		//accept request
@@ -93,7 +95,7 @@ int main(int argc, char *argv[])
 			//receives message from client
 			bytes_received = recv(conn_sock, recv_data, BUFF_SIZE-1, 0); //blocking
 			if (bytes_received <= 0){
-				printf("\nConnection closed");
+				printf("\nConnection closed\n");
 				break;
 			}
 			else{
@@ -104,7 +106,7 @@ int main(int argc, char *argv[])
 			//echo to client
 			bytes_sent = send(conn_sock, recv_data, bytes_received, 0); /* send to the client welcome message */
 			if (bytes_sent <= 0){
-				printf("\nConnection closed");
+				printf("\nConnection closed\n");
 				break;
 			}
 		}//end conversation

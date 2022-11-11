@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
     }
 
 	int client_sock;
-	char buff[BUFF_SIZE];
+	char buff[BUFF_SIZE],server_response[256];
 	struct sockaddr_in server_addr; /* server's address information */
 	int msg_len, bytes_sent, bytes_received;
 	
@@ -34,12 +34,24 @@ int main(int argc, char *argv[]){
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_port = htons(SERV_PORT);
 	server_addr.sin_addr.s_addr = inet_addr(SERV_IP);
+	printf("Server IP: %s - Port: %d\n", SERV_IP, SERV_PORT);
 	
-	//Step 3: Request to connect server
-	if(connect(client_sock, (struct sockaddr*)&server_addr, sizeof(struct sockaddr)) < 0){
-		printf("\nError!Can not connect to sever! Client exit imediately! ");
-		return 0;
+	// Convert IPv4 and IPv6 addresses from text to binary form
+	if (inet_pton(AF_INET, SERV_IP, &server_addr.sin_addr) <= 0)
+	{
+		printf("\nInvalid address/ Address not supported \n");
+		return -1;
 	}
+
+	if (connect(client_sock, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0)
+	{
+		printf("\nConnection Failed \n");
+		return -1;
+	}
+	
+	recv(client_sock, &server_response, sizeof(server_response), 0);
+	//printf("iu meo");
+	printf("Tu server: %s \n",server_response);
 		
 	//Step 4: Communicate with server			
 	while(1){
@@ -64,7 +76,7 @@ int main(int argc, char *argv[]){
 		}
 		
 		buff[bytes_received] = '\0';
-		printf("Reply from server: %s", buff);
+		printf("Reply from server: %s \n", buff);
 	}
 	
 	//Step 4: Close socket

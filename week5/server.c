@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
 	struct sockaddr_in client; /* client's address information */
 	int sin_size;
 	char server_mesg[256] = "Server connected successfully!\n";
+	char character[BUFF_SIZE], number[BUFF_SIZE];
 
 	//Step 1: Construct a TCP socket to listen connection request
 	if ((listen_sock = socket(AF_INET, SOCK_STREAM, 0)) == -1 ){  /* calls socket() */
@@ -79,13 +80,15 @@ int main(int argc, char *argv[])
 		perror("\nError: ");
 		return 0;
 	}
-	conn_sock=accept(listen_sock, NULL, NULL);
+	conn_sock = accept(listen_sock,( struct sockaddr *)&client, &sin_size);
 	send(conn_sock, server_mesg, sizeof(server_mesg), 0);
 	//Step 4: Communicate with client
 	while(1){
+		memset(character, '\0', (strlen(character)+1));
+        memset(number, '\0', (strlen(number)+1));
 		//accept request
 		sin_size = sizeof(struct sockaddr_in);
-		if ((conn_sock = accept(listen_sock,( struct sockaddr *)&client, &sin_size)) == -1) 
+		if (conn_sock  == -1) 
 			perror("\nError: ");
   
 		printf("You got a connection from %s\n", inet_ntoa(client.sin_addr) ); /* prints client's IP */
@@ -102,9 +105,10 @@ int main(int argc, char *argv[])
 				recv_data[bytes_received] = '\0';
 				printf("\nReceive: %s ", recv_data);
 			}
-			
+			string_process(recv_data, character, number);
 			//echo to client
-			bytes_sent = send(conn_sock, recv_data, bytes_received, 0); /* send to the client welcome message */
+			bytes_sent = sendto(conn_sock, recv_data,strlen(recv_data), 0,(struct sockaddr*)&bytes_received,sin_size); /* send to the client welcome message */
+			//bytes_sent = sendto(server_sock, buff, strlen(buff), 0, (struct sockaddr*)&client_receive, sin_size);
 			if (bytes_sent <= 0){
 				printf("\nConnection closed\n");
 				break;

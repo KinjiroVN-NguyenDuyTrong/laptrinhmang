@@ -14,7 +14,7 @@ int main(int argc, char *argv[]){
     }
 
 	int client_sock;
-	char buff[BUFF_SIZE],server_response[256];
+	char buff[BUFF_SIZE];
 	struct sockaddr_in server_addr; /* server's address information */
 	int msg_len, bytes_sent, bytes_received;
 	
@@ -49,9 +49,9 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	
-	recv(client_sock, &server_response, sizeof(server_response), 0);
-	//printf("iu meo");
-	printf("Tu server: %s \n",server_response);
+	recv(client_sock, buff, BUFF_SIZE-1, 0);
+	
+	printf("Tu server: %s \n",buff);
 		
 	//Step 4: Communicate with server			
 	while(1){
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 		}
 		
 		buff[bytes_received] = '\0';
-		printf("Reply from server: %s \n", buff);
+		printf("Reply from server:\n%s\n", buff);
 	}
 	
 	//Step 4: Close socket

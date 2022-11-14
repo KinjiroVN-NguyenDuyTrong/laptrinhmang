@@ -108,7 +108,7 @@ int main(int argc, char *argv[])
 			string_process(recv_data, character, number);
 			//echo to client
 			bytes_sent = sendto(conn_sock, recv_data,strlen(recv_data), 0,(struct sockaddr*)&bytes_received,sin_size); /* send to the client welcome message */
-			//bytes_sent = sendto(server_sock, buff, strlen(buff), 0, (struct sockaddr*)&client_receive, sin_size);
+		
 			if (bytes_sent <= 0){
 				printf("\nConnection closed\n");
 				break;

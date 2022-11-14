@@ -52,32 +52,55 @@ int main(int argc, char *argv[]){
 	recv(client_sock, buff, BUFF_SIZE-1, 0);
 	
 	printf("Tu server: %s \n",buff);
+	
+	//Step 4: Communicate with server
+	
+	while (1)
+	{
+		int select;
+		printf("\nMENU\n");
+		printf("----------------------\n");
+		printf("1. Gửi xâu bất kỳ. \n");
+		printf("2. Gửi nội dung một file. \n");
+		printf("----------------------\n");
+		printf("Enter your choice:"); 
 		
-	//Step 4: Communicate with server			
-	while(1){
-		//send message
-		printf("\nInsert string to send:");
-		memset(buff,'\0',(strlen(buff)+1));
-		fgets(buff, BUFF_SIZE, stdin);		
-		msg_len = strlen(buff);
-		if (msg_len == 0) break;
+		scanf("%d", &select);
+		switch (select)
+		{
+		case 1:
+			//send message
+			printf("\nInsert string to send:");
+			//memset(buff,'\0',(strlen(buff)+1));
+			//fgets(buff, BUFF_SIZE, stdin);	
+			scanf("%s",&buff);
+			msg_len = strlen(buff);
+			if (msg_len == 0) break;
 		
-		bytes_sent = send(client_sock, buff, msg_len, 0);
-		if(bytes_sent <= 0){
-			printf("\nConnection closed!\n");
+			bytes_sent = send(client_sock, buff, msg_len, 0);
+			if(bytes_sent <= 0){
+				printf("\nConnection closed!\n");
+				break;
+			}
+		
+			//receive echo reply
+			bytes_received = recv(client_sock, buff, BUFF_SIZE-1, 0);
+			if(bytes_received <= 0){
+				printf("\nError!Cannot receive data from sever!\n");
+				break;
+			}
+		
+			buff[bytes_received] = '\0';
+			printf("\nReply from server:\n%s\n", buff);
+			break;
+		case 2:
+			printf("iu meo\n");
+			break;
+		default: printf("\nchon 1 hoac 2\n");
 			break;
 		}
-		
-		//receive echo reply
-		bytes_received = recv(client_sock, buff, BUFF_SIZE-1, 0);
-		if(bytes_received <= 0){
-			printf("\nError!Cannot receive data from sever!\n");
-			break;
-		}
-		
-		buff[bytes_received] = '\0';
-		printf("Reply from server:\n%s\n", buff);
-	}
+	} 
+	
 	
 	//Step 4: Close socket
 	close(client_sock);

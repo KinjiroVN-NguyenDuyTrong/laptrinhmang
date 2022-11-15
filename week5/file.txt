@@ -1,0 +1,7 @@
+Most interprocess communication uses the client server model.
+These terms refer to the two processes which will be communicating with each other.
+One of the two processes, the client, connects to the other process, the server, typically to make a request for information.
+A good analogy is a person who makes a phone call to another person.
+The system calls for establishing a connection are somewhat different for the client and the server, but both involve the basic construct of a socket.
+A socket is one end of an interprocess communication channel.
+The two processes each establish their own socket.

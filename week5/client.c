@@ -7,6 +7,14 @@
 
 #define BUFF_SIZE 8192
 
+int readFile(char *filename[])
+{
+	
+
+    return 0;
+
+}
+
 int main(int argc, char *argv[]){
 	if (argc != 3){
         printf("Usage: %s <Server IP> <Server Port>\n", argv[0]);
@@ -16,7 +24,9 @@ int main(int argc, char *argv[]){
 	int client_sock;
 	char buff[BUFF_SIZE];
 	struct sockaddr_in server_addr; /* server's address information */
-	int msg_len, bytes_sent, bytes_received;
+	int msg_len,select, bytes_sent, bytes_received;
+	char filename[BUFF_SIZE];
+	char selected;
 	
 	char SERV_IP[16];
     int SERV_PORT;
@@ -57,7 +67,7 @@ int main(int argc, char *argv[]){
 	
 	while (1)
 	{
-		int select;
+		
 		printf("\nMENU\n");
 		printf("----------------------\n");
 		printf("1. Gửi xâu bất kỳ. \n");
@@ -94,7 +104,36 @@ int main(int argc, char *argv[]){
 			printf("\nReply from server:\n%s\n", buff);
 			break;
 		case 2:
-			printf("iu meo\n");
+			
+			printf("nhap ten file: ");
+			scanf("%s",&filename);
+			/*
+			msg_len = strlen(filename);
+			if (msg_len == 0) break;
+		
+			bytes_sent = send(client_sock, filename, msg_len, 0);
+			if(bytes_sent <= 0){
+				printf("\nConnection closed!\n");
+				break;
+			}
+			*/
+			FILE * fp = NULL;
+    		
+   	 		//Mở file bằng hàm fopen
+    		if(fp=fopen(filename, "r")==NULL)
+			{
+				printf("Ten file khong hop le!");
+			}
+   	 		else 
+			{
+				//Đọc từng dòng từ file cho tới khi gặp NULL
+   				 while (fgets(buff, BUFF_SIZE, fp) != NULL)
+    			{
+    			    //Xuất từng dòng ra màn hình
+   	   			 	 printf("%s", buff);
+    			}
+    			fclose(fp);
+			}
 			break;
 		default: printf("\nchon 1 hoac 2\n");
 			break;

@@ -7,14 +7,6 @@
 
 #define BUFF_SIZE 8192
 
-int readFile(char *filename[])
-{
-	
-
-    return 0;
-
-}
-
 int main(int argc, char *argv[]){
 	if (argc != 3){
         printf("Usage: %s <Server IP> <Server Port>\n", argv[0]);
@@ -22,11 +14,9 @@ int main(int argc, char *argv[]){
     }
 
 	int client_sock;
-	char buff[BUFF_SIZE];
+	char buff[BUFF_SIZE],server_response[256];
 	struct sockaddr_in server_addr; /* server's address information */
-	int msg_len,select, bytes_sent, bytes_received;
-	char filename[BUFF_SIZE];
-	char selected;
+	int msg_len, bytes_sent, bytes_received;
 	
 	char SERV_IP[16];
     int SERV_PORT;
@@ -59,87 +49,37 @@ int main(int argc, char *argv[]){
 		return -1;
 	}
 	
-	recv(client_sock, buff, BUFF_SIZE-1, 0);
+	recv(client_sock, &server_response, sizeof(server_response), 0);
 	
-	printf("Tu server: %s \n",buff);
-	
-	//Step 4: Communicate with server
-	
-	while (1)
-	{
+	printf("Tu server: %s \n",server_response);
 		
-		printf("\nMENU\n");
-		printf("----------------------\n");
-		printf("1. Gửi xâu bất kỳ. \n");
-		printf("2. Gửi nội dung một file. \n");
-		printf("----------------------\n");
-		printf("Enter your choice:"); 
+	//Step 4: Communicate with server			
+	while(1){
+		//send message
+		printf("\nInsert string to send:");
+		memset(buff,'\0',(strlen(buff)+1));
+    scanf("%s",&buff);
+		//fgets(buff, BUFF_SIZE, stdin);	
+    //fflush(stdin);	
+		msg_len = strlen(buff);
+		if (msg_len == 0) break;
 		
-		scanf("%d", &select);
-		switch (select)
-		{
-		case 1:
-			//send message
-			printf("\nInsert string to send:");
-			//memset(buff,'\0',(strlen(buff)+1));
-			//fgets(buff, BUFF_SIZE, stdin);	
-			scanf("%s",&buff);
-			msg_len = strlen(buff);
-			if (msg_len == 0) break;
-		
-			bytes_sent = send(client_sock, buff, msg_len, 0);
-			if(bytes_sent <= 0){
-				printf("\nConnection closed!\n");
-				break;
-			}
-		
-			//receive echo reply
-			bytes_received = recv(client_sock, buff, BUFF_SIZE-1, 0);
-			if(bytes_received <= 0){
-				printf("\nError!Cannot receive data from sever!\n");
-				break;
-			}
-		
-			buff[bytes_received] = '\0';
-			printf("\nReply from server:\n%s\n", buff);
-			break;
-		case 2:
-			
-			printf("nhap ten file: ");
-			scanf("%s",&filename);
-			/*
-			msg_len = strlen(filename);
-			if (msg_len == 0) break;
-		
-			bytes_sent = send(client_sock, filename, msg_len, 0);
-			if(bytes_sent <= 0){
-				printf("\nConnection closed!\n");
-				break;
-			}
-			*/
-			FILE * fp = NULL;
-    		
-   	 		//Mở file bằng hàm fopen
-    		if(fp=fopen(filename, "r")==NULL)
-			{
-				printf("Ten file khong hop le!");
-			}
-   	 		else 
-			{
-				//Đọc từng dòng từ file cho tới khi gặp NULL
-   				 while (fgets(buff, BUFF_SIZE, fp) != NULL)
-    			{
-    			    //Xuất từng dòng ra màn hình
-   	   			 	 printf("%s", buff);
-    			}
-    			fclose(fp);
-			}
-			break;
-		default: printf("\nchon 1 hoac 2\n");
+		bytes_sent = send(client_sock, buff, msg_len, 0);
+		if(bytes_sent <= 0){
+			printf("\nConnection closed!\n");
 			break;
 		}
-	} 
-	
+		
+		//receive echo reply
+		bytes_received = recv(client_sock, buff, BUFF_SIZE-1, 0);
+		if(bytes_received <= 0){
+			printf("\nError!Cannot receive data from sever!\n");
+			break;
+		}
+		
+		buff[bytes_received] = '\0';
+		printf("Reply from server: %s \n", buff);
+	}
 	
 	//Step 4: Close socket
 	close(client_sock);

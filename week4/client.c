@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
     struct sockaddr_in server_addr;
     char buff[BUFF_SIZE];
     char server_response[256],username[30],message[1024],password[30];
-  int time = 0;
+    int time = 0;
   int status = 0;
 
     char SERV_IP[16];
@@ -39,6 +39,7 @@ int main(int argc, char *argv[])
     server_addr.sin_addr.s_addr = inet_addr(SERV_IP); // converse ip adderss from string to network ip (int)
     printf("Server IP: %s - Port: %d\n", SERV_IP, SERV_PORT);
   
+  // Convert IPv4 and IPv6 addresses from text to binary form
   if (inet_pton(AF_INET, SERV_IP, &server_addr.sin_addr) <= 0)
 	{
 		printf("\nInvalid address/ Address not supported \n");
@@ -50,7 +51,9 @@ int main(int argc, char *argv[])
 		printf("\nConnection Failed \n");
 		return -1;
 	}
+
   recv(client_sock, &server_response, sizeof(server_response), 0);
+  
   printf("Tu server: %s\n", server_response);
     
   do

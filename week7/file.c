@@ -63,7 +63,7 @@ void writeListToFile(linkedList *list)
 {
   FILE *filename;
   Node *huan = list->root;
-  if ((filename = fopen("taikhoan.txt", "w")) == NULL)
+  if ((filename = fopen("account.txt", "w")) == NULL)
   {
     printf("Khong tim thay filename!\n");
     return;
@@ -85,7 +85,10 @@ int getUserAndPass(linkedList *list, char username[30],char password[30])
       {
         if (strcmp(cur ->acc.password, password) == 0)
         {
-          if(cur->acc.status==1) return 1;
+          if(cur->acc.status==1){
+            cur->acc.status=0;
+            return 1;
+          }
           else return 0;
         }
       }

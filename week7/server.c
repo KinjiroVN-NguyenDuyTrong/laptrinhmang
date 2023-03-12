@@ -139,7 +139,7 @@ void *handle_client(void *arg){
           }
         else if (getUserAndPass(&list, name,pass) ==0)
         {
-          strcpy(server_mesg, "Account not ready\n");
+          strcpy(server_mesg, "Account sigined in another device!\n");
           send(cli->sockfd, server_mesg, sizeof(server_mesg), 0);
         }
       
@@ -238,7 +238,8 @@ int main(int argc, char *argv[]){
   	createSingleList(&list);
   	readFileToList(&list);
   	printSingleList(&list);
-	
+	printf("=== Chat room ===\n");
+	readFile();
 
 	while(1){
 		socklen_t clilen = sizeof(cli_addr);
@@ -260,8 +261,7 @@ int main(int argc, char *argv[]){
 		cli->uid = uid++;
 
 		
-		printf("=== Chat room ===\n");
-		readFile();
+		
 
 		/* Add client to the queue and fork thread */
 		queue_add(cli);

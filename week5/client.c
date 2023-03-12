@@ -58,9 +58,9 @@ int main(int argc, char *argv[]){
 		//send message
 		printf("\nInsert string to send:");
 		memset(buff,'\0',(strlen(buff)+1));
-    scanf("%s",&buff);
+   		scanf("%s",&buff);
 		//fgets(buff, BUFF_SIZE, stdin);	
-    //fflush(stdin);	
+    	//fflush(stdin);	
 		msg_len = strlen(buff);
 		if (msg_len == 0) break;
 		
